@@ -1,0 +1,35 @@
+<html>
+<link rel="stylesheet" href="styles.css">
+<body>
+    
+
+    <video id="video" width="300" height="300" autoplay></video>
+</body>
+
+
+
+
+<script>
+(function(){
+
+var video = document.getElementById('video'),
+    vendorUrl = window.URL || window.webkitURL;
+    navigator.getMedia = navigator.getUserMedia || 
+    navigator.webkitGetUserMedia || 
+    navigator.mozGetUserMedia || 
+    navigator.msGetUserMedia;
+    //capture video//
+    navigator.getMedia({
+        video:true,
+        audio:false,
+    },
+    function(stream){
+        video.src = vendorUrl.createObjectURL(stream);
+        video.play();
+    },
+    function(error){
+        console.log(error);
+    });
+})();
+</script>
+</html>

@@ -1,0 +1,6 @@
+ #video{
+    width: 400px;
+    background-color: grey;
+    border: 10px solid black;
+    margin: 0 auto;
+}
