@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+</head>
+<body>
+        <video id="video" width="300" height="300" autoplay></video>
+        <button>Take snapshot</button>
+        <canvas></canvas>
+</body>
+
+<script> // SKRYPT WEBSOCKETA
+const video = document.querySelector('video');
+const canvas = window.canvas = document.querySelector('canvas');
+canvas.width = 480;
+canvas.height = 360;
+
+
+       var strim;
+               (function(){
+               
+               var video = document.getElementById('video'),
+                   vendorUrl = window.URL || window.webkitURL;
+                   navigator.getMedia = navigator.getUserMedia || 
+                   navigator.webkitGetUserMedia || 
+                   navigator.mozGetUserMedia || 
+                   navigator.msGetUserMedia;
+                   //capture video//
+                   navigator.getMedia({
+                       video:true,
+                       audio:false,
+                   },
+                   function(stream){
+                       strim=stream;
+                       video.src = vendorUrl.createObjectURL(stream);
+                       video.play();
+
+                   },
+                   function(error){
+                       console.log(error);
+                   });
+               })();
+
+
+
+
+
+        var ws = new WebSocket("ws://localhost:80");
+        ws.onopen = function(e) {
+        console.log('Connection to server opened');
+        }
+        function sendMessage() {
+        ws.send($('#message').val());
+        }
+        ws.onmessage = function(e) {
+
+    canvas.width = e.videoWidth;
+  canvas.height = e.videoHeight;
+  canvas.getContext('2d').drawImage(e, 0, 0, canvas.width, canvas.height);
+
+        if(typeof e.data === "string"){
+        console.log("String message received", e, e.data);
+        } else {
+        console.log("Other message received", e, e.data);
+        }
+       }
+
+
+
+
+
+               setInterval(function(){
+
+                    ws.send(strim);
+
+                     }, 1000);
+
+
+
+
+
+'use strict';
+
+// Put variables in global scope to make them available to the browser console.
+
+
+const button = document.querySelector('button');
+button.onclick = function() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+};
+
+const constraints = {
+  audio: false,
+  video: true
+};
+
+function handleSuccess(stream) {
+  window.stream = stream; // make stream available to browser console
+  video.srcObject = stream;
+}
+
+function handleError(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+
+navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
+
+
+
+
+
+
+
+
+
+
+
+
+               </script>
+
+</html>
